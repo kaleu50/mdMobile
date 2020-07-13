@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as auth from '../services/auth.service';
 import api from '../services/api.service';
 import { LoginRequest } from 'src/services/models/login.model';
+var jwtDecode = require('jwt-decode');
 
 interface User {
   name: string;
@@ -40,12 +41,12 @@ export const AuthProvider: React.FC = ({children}) => {
   async function signIn(loginData: LoginRequest) {
     const response = await auth.signIn(loginData);
     console.log('response', response);
-    setUser(response.user);
+    setUser(jwtDecode(response.authJwtToken));
 
     api.defaults.headers['Authorization'] = `Bearer ${response.token}`;
 
-    await AsyncStorage.setItem('@RNAAuth:user', JSON.stringify(response.user));
-    await AsyncStorage.setItem('@RNAAuth:token', response.token);
+    await AsyncStorage.setItem('@RNAAuth:user', JSON.stringify(jwtDecode(response.authJwtToken)));
+    await AsyncStorage.setItem('@RNAAuth:token', response.authJwtToken);
   }
 
   async function logout() {

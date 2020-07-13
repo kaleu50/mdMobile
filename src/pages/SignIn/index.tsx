@@ -18,7 +18,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const SignIn: React.FC = () => {
+interface Props {
+  navigation: any
+};
+
+const SignIn: React.FC<Props> = ({navigation}) => {
   const {signed, signIn} = useAuth();
 
   const passwordRef = useRef();

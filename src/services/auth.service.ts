@@ -2,14 +2,17 @@ import { LoginRequest } from './models/login.model';
 import api from "./api.service";
 
 
-interface User{
+interface reponseUser {
     token: string,
-    user:{
+    user: {
         name: string;
         email: string;
     }
 }
 
-export function signIn (loginData: LoginRequest): Promise<User> {
-    return api.post('/login', {loginData})
+export function signIn(data: LoginRequest): Promise<any> {
+    return api.post('/login', data).then((res) => {
+        console.log(res.data);
+        return res.data;
+    })
 }
