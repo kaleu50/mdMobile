@@ -25,7 +25,7 @@ interface Props {
 const SignIn: React.FC<Props> = ({navigation}) => {
   const {signed, signIn} = useAuth();
 
-  const passwordRef = useRef();
+  const passwordRef = useRef<any>();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

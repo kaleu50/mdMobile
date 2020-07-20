@@ -10,7 +10,8 @@ import {
 } from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
-import { useUser } from '../../contexts/users.context';
+import {useUser} from '../../contexts/users.context';
+import { Text } from 'src/components/Button/styles';
 
 interface Props {
   navigation: any;
@@ -28,7 +29,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [selectedConditionValue, setSelectedConditionValue] = useState('');
 
-  const {signUp} = useUser();
+  const {updateUser} = useUser();
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -46,15 +47,28 @@ const SignUp: React.FC<Props> = ({navigation}) => {
       email,
       password,
       birthdate: date,
-      condition: selectedConditionValue
+      condition: selectedConditionValue,
     } as SignUpRequest;
     // email, senha
-    signUp(requestLogin);
+    updateUser(requestLogin);
   }
 
   return (
     <Container>
       <Form>
+        <View
+          style={{
+            backgroundColor: '#bcbec1',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            alignSelf: 'center',
+            marginBottom: 20,
+          }}>
+          <Text style={{color: 'white', fontSize: 28}}>JD</Text>
+        </View>
         <FormInput
           icon="person-outline"
           autoCorrect={false}
@@ -127,4 +141,4 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   );
 };
 
-export default SignUp;
+export default Profile;

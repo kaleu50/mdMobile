@@ -1,6 +1,8 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as auth from '../services/auth.service';
+import * as userService from '../services/users.service';
+
 import api from '../services/api.service';
 import { LoginRequest } from 'src/services/models/login.model';
 var jwtDecode = require('jwt-decode');
@@ -28,17 +30,20 @@ export const AuthProvider: React.FC = ({children}) => {
       const storageUser = await AsyncStorage.getItem('@RNAAuth:user');
       const storagedToken = await AsyncStorage.getItem('@RNAAuth:token');
 
+
       if (storageUser && storagedToken) {
         api.defaults.headers['Authorization'] = `Bearer ${storagedToken}`;
 
         setUser(JSON.parse(storageUser));
         setLoading(false);
       }
+
     }
     loadStoragedData();
   }, []);
 
   async function signIn(loginData: LoginRequest) {
+    
     const response = await auth.signIn(loginData);
     console.log('response', response);
     setUser(jwtDecode(response.authJwtToken));
@@ -49,8 +54,12 @@ export const AuthProvider: React.FC = ({children}) => {
     await AsyncStorage.setItem('@RNAAuth:token', response.authJwtToken);
   }
 
+
+
   async function logout() {
     AsyncStorage.clear().then(() => {
+      api.defaults.headers['Authorization'] = ``;
+
       setUser(null);
     });
   }
