@@ -8,3 +8,10 @@ export function signUp(data: SignUpRequest): Promise<any> {
         return res.data;
     })
 }
+
+export function update(data: SignUpRequest): Promise<any> {
+    return api.post('/users/updateuser', data).then((res) => {
+        console.log(res.data);
+        return res.data;
+    })
+}

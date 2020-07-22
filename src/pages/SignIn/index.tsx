@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#282a36'
   },
 });
 
@@ -42,7 +43,7 @@ const SignIn: React.FC<Props> = ({navigation}) => {
   }
 
   return (
-    <Container>
+    <Container style={styles.container}>
 
       <Form>
         <FormInput

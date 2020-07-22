@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {View, Button, StyleSheet, Platform, Picker} from 'react-native';
+import {View, Button, StyleSheet, Platform, Picker, Image} from 'react-native';
 import {
   Container,
   Form,
@@ -10,24 +10,41 @@ import {
 } from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
-import {useUser} from '../../contexts/users.context';
-import { Text } from 'src/components/Button/styles';
+import {useUser, UserProvider} from '../../contexts/users.context';
+import {Text} from '../../components/Button/styles';
+import {useAuth} from '../../contexts/auth.context';
 
 interface Props {
   navigation: any;
 }
 
-const SignUp: React.FC<Props> = ({navigation}) => {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#282a36',
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
+  },
+});
+
+const Profile: React.FC<Props> = ({navigation}) => {
+  const {user} = useAuth();
+
   const emailRef = useRef<any>();
   const passwordRef = useRef<any>();
   const birthdateRef = useRef<any>();
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(user?.email);
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [name, setName] = useState(user?.name);
   const [date, setDate] = useState(new Date(1598051730000));
   const [show, setShow] = useState(false);
-  const [selectedConditionValue, setSelectedConditionValue] = useState('');
+  const [selectedConditionValue, setSelectedConditionValue] = useState(
+    user?.condition,
+  );
 
   const {updateUser} = useUser();
 
@@ -42,7 +59,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   };
 
   function handleSubmit() {
-    const requestLogin = {
+    const requestUpdate = {
       name,
       email,
       password,
@@ -50,11 +67,11 @@ const SignUp: React.FC<Props> = ({navigation}) => {
       condition: selectedConditionValue,
     } as SignUpRequest;
     // email, senha
-    updateUser(requestLogin);
+    updateUser(requestUpdate);
   }
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <Form>
         <View
           style={{
@@ -67,7 +84,13 @@ const SignUp: React.FC<Props> = ({navigation}) => {
             alignSelf: 'center',
             marginBottom: 20,
           }}>
-          <Text style={{color: 'white', fontSize: 28}}>JD</Text>
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri:
+                'https://www.google.fr/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+            }}
+          />
         </View>
         <FormInput
           icon="person-outline"
@@ -133,10 +156,6 @@ const SignUp: React.FC<Props> = ({navigation}) => {
 
         <SubmitButton onPress={handleSubmit}>Criar conta</SubmitButton>
       </Form>
-
-      <SignLink onPress={() => navigation.navigate('SignIn')}>
-        <SignLinkText>Já tenho conta</SignLinkText>
-      </SignLink>
     </Container>
   );
 };

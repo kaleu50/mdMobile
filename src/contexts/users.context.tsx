@@ -1,4 +1,5 @@
-import {createContext, useContext} from 'react';
+import React, {createContext, useState, useEffect, useContext} from 'react';
+
 import {SignUpRequest} from 'src/services/models/signup.model';
 import {User} from 'src/services/models/user.model';
 import * as userService from '../services/users.service';
@@ -18,7 +19,7 @@ export const UserProvider: React.FC = ({children}) => {
   }
 
   async function updateUser(data: SignUpRequest) {
-    const response = await userService.signUp(data);
+    const response = await userService.update(data);
   }
 
   return (

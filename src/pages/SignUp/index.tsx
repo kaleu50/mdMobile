@@ -11,10 +11,19 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
 import { useUser } from '../../contexts/users.context';
+import { useAuth } from '../../contexts/auth.context';
 
 interface Props {
   navigation: any;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#282a36'
+  },
+});
 
 const SignUp: React.FC<Props> = ({navigation}) => {
   const emailRef = useRef<any>();
@@ -28,7 +37,9 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [selectedConditionValue, setSelectedConditionValue] = useState('');
 
-  const {signUp} = useUser();
+  // const {signUp} = useUser();
+
+  const {signUp} = useAuth();
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -41,7 +52,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   };
 
   function handleSubmit() {
-    const requestLogin = {
+    const data = {
       name,
       email,
       password,
@@ -49,11 +60,11 @@ const SignUp: React.FC<Props> = ({navigation}) => {
       condition: selectedConditionValue
     } as SignUpRequest;
     // email, senha
-    signUp(requestLogin);
+    signUp(data);
   }
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <Form>
         <FormInput
           icon="person-outline"

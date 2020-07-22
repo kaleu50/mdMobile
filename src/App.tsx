@@ -5,13 +5,16 @@ import {NavigationContainer} from '@react-navigation/native';
 import {AuthProvider} from './contexts/auth.context';
 
 import Routes from './routes';
+import {UserProvider} from './contexts/users.context';
 
 const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <AuthProvider>
-        <Routes />
-      </AuthProvider>
+      <UserProvider>
+        <AuthProvider>
+          <Routes />
+        </AuthProvider>
+      </UserProvider>
     </NavigationContainer>
   );
 };

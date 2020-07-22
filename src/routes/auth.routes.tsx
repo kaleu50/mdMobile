@@ -8,8 +8,16 @@ const AuthStack = createStackNavigator();
 
 const AuthRoutes: React.FC = () => (
   <AuthStack.Navigator>
-    <AuthStack.Screen name="SignIn" component={SignIn} />
-    <AuthStack.Screen name="SignUp" component={SignUp} />
+    <AuthStack.Screen name="SignIn" component={SignIn} options={{
+      headerStyle: {
+        backgroundColor: '#6272a4'
+     }
+    }}/>
+    <AuthStack.Screen name="SignUp" component={SignUp} options={{
+      headerStyle: {
+        backgroundColor: '#6272a4'
+     }
+    }}/>
   </AuthStack.Navigator>
 );
 

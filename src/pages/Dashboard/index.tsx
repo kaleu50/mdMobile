@@ -6,11 +6,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#282a36'
   },
 });
 
-const Dashboard: React.FC = () => {
-    const {logout} = useAuth();
+interface Props {
+  navigation: any;
+}
+
+const Dashboard: React.FC<Props> = ({navigation}) => {
+
+  const {logout} = useAuth();
 
   function handleLogout() {
     // email, senha
@@ -19,6 +25,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
       <Button title="Logout" onPress={handleLogout} />
     </View>
   );
