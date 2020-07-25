@@ -9,6 +9,7 @@ interface UsersContextData {
   //   loading: boolean;
   updateUser(signUpRequest: SignUpRequest): Promise<void>;
   signUp(signUpRequest: SignUpRequest): Promise<void>;
+  updateProfilePic(data: any): Promise<void>;
 }
 const UsersContext = createContext<UsersContextData>({} as UsersContextData);
 
@@ -22,11 +23,16 @@ export const UserProvider: React.FC = ({children}) => {
     const response = await userService.update(data);
   }
 
+  async function updateProfilePic(data: any) {
+    const response = await userService.uploadImageProfile(data);
+  }
+
   return (
     <UsersContext.Provider
       value={{
         signUp,
-        updateUser
+        updateUser,
+        updateProfilePic
       }}>
       {children}
     </UsersContext.Provider>

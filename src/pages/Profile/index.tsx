@@ -13,6 +13,7 @@ import {SignUpRequest} from 'src/services/models/signup.model';
 import {useUser, UserProvider} from '../../contexts/users.context';
 import {Text} from '../../components/Button/styles';
 import {useAuth} from '../../contexts/auth.context';
+import ImagePicker from 'react-native-image-picker';
 
 interface Props {
   navigation: any;
@@ -30,8 +31,18 @@ const styles = StyleSheet.create({
   },
 });
 
+const optionsImagePicker = {
+  title: 'Select Avatar',
+  customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
+
 const Profile: React.FC<Props> = ({navigation}) => {
   const {user} = useAuth();
+  const {updateUser, updateProfilePic} = useUser();
 
   const emailRef = useRef<any>();
   const passwordRef = useRef<any>();
@@ -45,8 +56,6 @@ const Profile: React.FC<Props> = ({navigation}) => {
   const [selectedConditionValue, setSelectedConditionValue] = useState(
     user?.condition,
   );
-
-  const {updateUser} = useUser();
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -68,6 +77,40 @@ const Profile: React.FC<Props> = ({navigation}) => {
     } as SignUpRequest;
     // email, senha
     updateUser(requestUpdate);
+  }
+
+  function handleImage() {
+    ImagePicker.showImagePicker(optionsImagePicker, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // const source = { image: response.data };
+        //   formdata.append('image',{
+        //     uri: Platform.OS === 'android' ? photo.uri : 'file://' + photo.uri,
+        //     name: 'test',
+        //     type: 'image/jpeg' // or your mime type what you want
+        // });
+        const uploadImage = {
+          imageBase64: 'data:' + response.type + ';base64,' + response.data,
+        };
+
+        // console.log(uploadImage);
+        updateProfilePic(uploadImage);
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        // this.setState({
+        //   avatarSource: source,
+        // });
+      }
+    });
   }
 
   return (
@@ -92,6 +135,8 @@ const Profile: React.FC<Props> = ({navigation}) => {
             }}
           />
         </View>
+        <SubmitButton onPress={handleImage}>Alterar foto</SubmitButton>
+
         <FormInput
           icon="person-outline"
           autoCorrect={false}
