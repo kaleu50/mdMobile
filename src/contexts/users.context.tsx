@@ -1,15 +1,15 @@
-import React, {createContext, useState, useEffect, useContext} from 'react';
+import React, {createContext, useContext} from 'react';
 
 import {SignUpRequest} from 'src/services/models/signup.model';
 import {User} from 'src/services/models/user.model';
 import * as userService from '../services/users.service';
 
 interface UsersContextData {
-  //   user: User | null;
-  //   loading: boolean;
   updateUser(signUpRequest: SignUpRequest): Promise<void>;
   signUp(signUpRequest: SignUpRequest): Promise<void>;
   updateProfilePic(data: any): Promise<void>;
+  getUserById(id: string): Promise<User>;
+
 }
 const UsersContext = createContext<UsersContextData>({} as UsersContextData);
 
@@ -20,11 +20,15 @@ export const UserProvider: React.FC = ({children}) => {
   }
 
   async function updateUser(data: SignUpRequest) {
-    const response = await userService.update(data);
+    return await userService.update(data);
   }
 
   async function updateProfilePic(data: any) {
     const response = await userService.uploadImageProfile(data);
+  }
+
+  async function getUserById(id: string) {
+    return await userService.getUserById(id);
   }
 
   return (
@@ -32,7 +36,8 @@ export const UserProvider: React.FC = ({children}) => {
       value={{
         signUp,
         updateUser,
-        updateProfilePic
+        updateProfilePic,
+        getUserById
       }}>
       {children}
     </UsersContext.Provider>

@@ -1,19 +1,12 @@
 import React, {useState, useRef} from 'react';
 import {View, Button, StyleSheet, Platform, Picker, Image} from 'react-native';
-import {
-  Container,
-  Form,
-  FormInput,
-  SubmitButton,
-  SignLink,
-  SignLinkText,
-} from './styles';
+import {Container, Form, FormInput, SubmitButton} from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
-import {useUser, UserProvider} from '../../contexts/users.context';
-import {Text} from '../../components/Button/styles';
+import {useUser} from '../../contexts/users.context';
 import {useAuth} from '../../contexts/auth.context';
 import ImagePicker from 'react-native-image-picker';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface Props {
   navigation: any;
@@ -26,8 +19,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#282a36',
   },
   tinyLogo: {
-    width: 50,
-    height: 50,
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    overflow: "hidden"
   },
 });
 
@@ -41,8 +36,8 @@ const optionsImagePicker = {
 };
 
 const Profile: React.FC<Props> = ({navigation}) => {
-  const {user} = useAuth();
-  const {updateUser, updateProfilePic} = useUser();
+  const {user, updateToken, updateLocalUser} = useAuth();
+  const {updateUser, updateProfilePic, getUserById} = useUser();
 
   const emailRef = useRef<any>();
   const passwordRef = useRef<any>();
@@ -76,39 +71,29 @@ const Profile: React.FC<Props> = ({navigation}) => {
       condition: selectedConditionValue,
     } as SignUpRequest;
     // email, senha
-    updateUser(requestUpdate);
+    updateUser(requestUpdate).then((res) => {
+      updateToken(res);
+      getUserById(user!.id).then((res) => {
+        updateLocalUser(res);
+      });
+    });
   }
 
   function handleImage() {
     ImagePicker.showImagePicker(optionsImagePicker, (response) => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
+        console.log('user', user);
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        // const source = { image: response.data };
-        //   formdata.append('image',{
-        //     uri: Platform.OS === 'android' ? photo.uri : 'file://' + photo.uri,
-        //     name: 'test',
-        //     type: 'image/jpeg' // or your mime type what you want
-        // });
         const uploadImage = {
           imageBase64: 'data:' + response.type + ';base64,' + response.data,
         };
 
-        // console.log(uploadImage);
         updateProfilePic(uploadImage);
-
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        // this.setState({
-        //   avatarSource: source,
-        // });
       }
     });
   }
@@ -116,27 +101,27 @@ const Profile: React.FC<Props> = ({navigation}) => {
   return (
     <Container style={styles.container}>
       <Form>
-        <View
-          style={{
-            backgroundColor: '#bcbec1',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            alignSelf: 'center',
-            marginBottom: 20,
-          }}>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri:
-                'https://www.google.fr/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-            }}
-          />
-        </View>
-        <SubmitButton onPress={handleImage}>Alterar foto</SubmitButton>
-
+        <TouchableOpacity onPress={handleImage}>
+          <View
+            style={{
+              backgroundColor: '#bcbec1',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              alignSelf: 'center',
+              marginBottom: 20,
+            }}>
+            <Image
+              style={styles.tinyLogo}
+              source={{
+                uri: user!.refprofilepic,
+              }}
+              key={user!.refprofilepic}
+            />
+          </View>
+        </TouchableOpacity>
         <FormInput
           icon="person-outline"
           autoCorrect={false}
@@ -199,7 +184,7 @@ const Profile: React.FC<Props> = ({navigation}) => {
           <Picker.Item label="JavaScript" value="js" />
         </Picker>
 
-        <SubmitButton onPress={handleSubmit}>Criar conta</SubmitButton>
+        <SubmitButton onPress={handleSubmit}>Atualizar conta</SubmitButton>
       </Form>
     </Container>
   );

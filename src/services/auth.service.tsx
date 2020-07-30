@@ -12,7 +12,6 @@ interface reponseUser {
 
 export function signIn(data: LoginRequest): Promise<any> {
     return api.post('/login', data).then((res) => {
-        console.log(res.data);
         return res.data;
     })
 }

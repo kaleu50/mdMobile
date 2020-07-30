@@ -31,8 +31,6 @@ const SignIn: React.FC<Props> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  console.log(signed);
-
   function handleSignIn() {
     const requestLogin = {
       email,
@@ -61,7 +59,7 @@ const SignIn: React.FC<Props> = ({navigation}) => {
         <FormInput
           icon="lock-outline"
           secureTextEntry
-          placeholder="Sua senha secreta"
+          placeholder="Digite sua senha"
           ref={passwordRef}
           returnKeyType="send"
           onSubmitEditing={handleSignIn}
