@@ -9,7 +9,7 @@ const AppStack = createStackNavigator();
 const AppRoutes: React.FC = () => (
   <AppStack.Navigator>
     <AppStack.Screen
-      name="Dashboard"
+      name="Feed"
       component={Dashboard}
       options={{
         headerStyle: {

@@ -10,8 +10,8 @@ import {
 } from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
-import { useUser } from '../../contexts/users.context';
-import { useAuth } from '../../contexts/auth.context';
+import {useUser} from '../../contexts/users.context';
+import {useAuth} from '../../contexts/auth.context';
 
 interface Props {
   navigation: any;
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#282a36'
+    backgroundColor: '#282a36',
   },
 });
 
@@ -57,7 +57,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
       email,
       password,
       birthdate: date,
-      condition: selectedConditionValue
+      condition: selectedConditionValue,
     } as SignUpRequest;
     // email, senha
     signUp(data);
@@ -103,7 +103,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
         <View>
           <Button
             onPress={showDatepicker}
-            title="Show date picker!"
+            title="Data de nascimento"
             ref={birthdateRef}
           />
         </View>
@@ -120,12 +120,13 @@ const SignUp: React.FC<Props> = ({navigation}) => {
 
         <Picker
           selectedValue={selectedConditionValue}
-          style={{height: 50, width: 150}}
+          style={{color: '#fff'}}
           onValueChange={(itemValue, itemIndex) =>
             setSelectedConditionValue(itemValue)
           }>
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
+          <Picker.Item label="Cardiaco" value="cardio" />
+          <Picker.Item label="Hepatico" value="hepatio" />
+          <Picker.Item label="Outros" value="outros" />
         </Picker>
 
         <SubmitButton onPress={handleSubmit}>Criar conta</SubmitButton>

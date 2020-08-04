@@ -6,13 +6,18 @@ import {SignUpRequest} from 'src/services/models/signup.model';
 import {useUser} from '../../contexts/users.context';
 import {useAuth} from '../../contexts/auth.context';
 import ImagePicker from 'react-native-image-picker';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import TouchableRoundedImage from '../../components/TouchableRoundedImage';
 
 interface Props {
   navigation: any;
 }
 
 const styles = StyleSheet.create({
+  containerImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -22,7 +27,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: 'contain',
-    overflow: "hidden"
+    overflow: 'hidden',
   },
 });
 
@@ -62,7 +67,7 @@ const Profile: React.FC<Props> = ({navigation}) => {
     setShow(true);
   };
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const requestUpdate = {
       name,
       email,
@@ -70,13 +75,12 @@ const Profile: React.FC<Props> = ({navigation}) => {
       birthdate: date,
       condition: selectedConditionValue,
     } as SignUpRequest;
-    // email, senha
-    updateUser(requestUpdate).then((res) => {
-      updateToken(res);
-      getUserById(user!.id).then((res) => {
-        updateLocalUser(res);
-      });
-    });
+
+    const resToken = await updateUser(requestUpdate);
+    await updateToken(resToken);
+    const resUserUpdated = await getUserById(user!.id);
+    console.log('resUserUpdated', resUserUpdated);
+    await updateLocalUser(resUserUpdated);
   }
 
   function handleImage() {
@@ -94,6 +98,8 @@ const Profile: React.FC<Props> = ({navigation}) => {
         };
 
         updateProfilePic(uploadImage);
+        getUserById(user!.id);
+        updateLocalUser({...user, refprofilepic: uploadImage.imageBase64});
       }
     });
   }
@@ -101,27 +107,14 @@ const Profile: React.FC<Props> = ({navigation}) => {
   return (
     <Container style={styles.container}>
       <Form>
-        <TouchableOpacity onPress={handleImage}>
-          <View
-            style={{
-              backgroundColor: '#bcbec1',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 80,
-              height: 80,
-              borderRadius: 40,
-              alignSelf: 'center',
-              marginBottom: 20,
-            }}>
-            <Image
-              style={styles.tinyLogo}
-              source={{
-                uri: user!.refprofilepic,
-              }}
-              key={user!.refprofilepic}
-            />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.containerImage}>
+          <TouchableRoundedImage
+            onPress={handleImage}
+            size={64}
+            source={user!.refprofilepic}
+          />
+        </View>
+
         <FormInput
           icon="person-outline"
           autoCorrect={false}
@@ -146,20 +139,10 @@ const Profile: React.FC<Props> = ({navigation}) => {
           onChangeText={setEmail}
         />
 
-        <FormInput
-          icon="lock-outline"
-          secureTextEntry
-          placeholder="Sua senha secreta"
-          ref={passwordRef}
-          returnKeyType="next"
-          onSubmitEditing={() => birthdateRef.current.focus()}
-          value={password}
-          onChangeText={setPassword}
-        />
         <View>
           <Button
             onPress={showDatepicker}
-            title="Show date picker!"
+            title="Data de nascimento"
             ref={birthdateRef}
           />
         </View>
@@ -176,12 +159,13 @@ const Profile: React.FC<Props> = ({navigation}) => {
 
         <Picker
           selectedValue={selectedConditionValue}
-          style={{height: 50, width: 150}}
+          style={{color: '#fff'}}
           onValueChange={(itemValue, itemIndex) =>
             setSelectedConditionValue(itemValue)
           }>
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
+          <Picker.Item label="Cardiaco" value="cardio" />
+          <Picker.Item label="Hepatico" value="hepatio" />
+          <Picker.Item label="Outros" value="outros" />
         </Picker>
 
         <SubmitButton onPress={handleSubmit}>Atualizar conta</SubmitButton>

@@ -22,6 +22,7 @@ export function uploadImageProfile(data: any): Promise<any> {
 }
 
 export function getUserById(id: string): Promise<User> {
+  console.log(id);
   const config = {
     params: {id},
   } as AxiosRequestConfig;
