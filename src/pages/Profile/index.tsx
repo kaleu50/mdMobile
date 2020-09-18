@@ -7,6 +7,7 @@ import {useUser} from '../../contexts/users.context';
 import {useAuth} from '../../contexts/auth.context';
 import ImagePicker from 'react-native-image-picker';
 import TouchableRoundedImage from '../../components/TouchableRoundedImage';
+import PageHeader from '../../components/PageHeader';
 
 interface Props {
   navigation: any;
@@ -14,6 +15,7 @@ interface Props {
 
 const styles = StyleSheet.create({
   containerImage: {
+    marginTop: -64,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -105,72 +107,78 @@ const Profile: React.FC<Props> = ({navigation}) => {
   }
 
   return (
-    <Container style={styles.container}>
-      <Form>
-        <View style={styles.containerImage}>
-          <TouchableRoundedImage
-            onPress={handleImage}
-            size={64}
-            source={user!.refprofilepic}
+    <>
+      <View style={{backgroundColor: '#282a36'}}>
+        <PageHeader hasSearch={false} isLogout={false} />
+      </View>
+
+      <Container style={styles.container}>
+        <Form>
+          <View style={styles.containerImage}>
+            <TouchableRoundedImage
+              onPress={handleImage}
+              size={128}
+              source={user!.refprofilepic}
+            />
+          </View>
+
+          <FormInput
+            icon="person-outline"
+            autoCorrect={false}
+            autoCapitalize="none"
+            placeholder="Nome completo"
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current.focus()}
+            value={name}
+            onChangeText={setName}
           />
-        </View>
 
-        <FormInput
-          icon="person-outline"
-          autoCorrect={false}
-          autoCapitalize="none"
-          placeholder="Nome completo"
-          returnKeyType="next"
-          onSubmitEditing={() => emailRef.current.focus()}
-          value={name}
-          onChangeText={setName}
-        />
-
-        <FormInput
-          icon="mail-outline"
-          keyboardType="email-address"
-          autoCorrect={false}
-          autoCapitalize="none"
-          placeholder="Digite seu e-mail"
-          ref={emailRef}
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current.focus()}
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        <View>
-          <Button
-            onPress={showDatepicker}
-            title="Data de nascimento"
-            ref={birthdateRef}
+          <FormInput
+            icon="mail-outline"
+            keyboardType="email-address"
+            autoCorrect={false}
+            autoCapitalize="none"
+            placeholder="Digite seu e-mail"
+            ref={emailRef}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current.focus()}
+            value={email}
+            onChangeText={setEmail}
           />
-        </View>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={'date'}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-          />
-        )}
 
-        <Picker
-          selectedValue={selectedConditionValue}
-          style={{color: '#fff'}}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedConditionValue(itemValue)
-          }>
-          <Picker.Item label="Cardiaco" value="cardio" />
-          <Picker.Item label="Hepatico" value="hepatio" />
-          <Picker.Item label="Outros" value="outros" />
-        </Picker>
+          <View>
+            <Button
+              onPress={showDatepicker}
+              title="Data de nascimento"
+              ref={birthdateRef}
+            />
+          </View>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
 
-        <SubmitButton onPress={handleSubmit}>Atualizar conta</SubmitButton>
-      </Form>
-    </Container>
+          <Picker
+            selectedValue={selectedConditionValue}
+            style={{color: '#fff'}}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedConditionValue(itemValue)
+            }>
+            <Picker.Item label="Cardiaco" value="cardio" />
+            <Picker.Item label="Hepatico" value="hepatio" />
+            <Picker.Item label="Outros" value="outros" />
+          </Picker>
+
+          <SubmitButton onPress={handleSubmit}>Atualizar conta</SubmitButton>
+        </Form>
+      </Container>
+    </>
   );
 };
 

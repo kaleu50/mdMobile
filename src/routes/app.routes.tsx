@@ -7,7 +7,7 @@ import Profile from '../pages/Profile';
 const AppStack = createStackNavigator();
 
 const AppRoutes: React.FC = () => (
-  <AppStack.Navigator>
+  <AppStack.Navigator screenOptions={{headerShown: false}}>
     <AppStack.Screen
       name="Feed"
       component={Dashboard}
@@ -17,11 +17,15 @@ const AppRoutes: React.FC = () => (
         },
       }}
     />
-    <AppStack.Screen name="Profile" component={Profile} options={{
-      headerStyle: {
-        backgroundColor: '#6272a4'
-     }
-    }}/>
+    <AppStack.Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        headerStyle: {
+          backgroundColor: '#6272a4',
+        },
+      }}
+    />
   </AppStack.Navigator>
 );
 

@@ -7,6 +7,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Container} from './styles';
 import {IconButton, Colors} from 'react-native-paper';
 import TouchableRoundedImage from '../../components/TouchableRoundedImage';
+import PageHeader from '../../components/PageHeader';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +71,8 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
   function Feed() {
     return (
       <View style={styles.container}>
+        <PageHeader hasSearch={true} isLogout={true} />
+
         <ScrollView>
           <View>
             <View style={styles.containerImageProfile}>
