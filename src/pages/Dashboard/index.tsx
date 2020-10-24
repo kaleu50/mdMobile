@@ -1,5 +1,14 @@
-import React from 'react';
-import {View, Button, StyleSheet, Image, Dimensions, Text} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Button,
+  StyleSheet,
+  Image,
+  Dimensions,
+  Text,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+} from 'react-native';
 import {useAuth} from '../../contexts/auth.context';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Profile from '../Profile/index';
@@ -8,6 +17,11 @@ import {Container} from './styles';
 import {IconButton, Colors} from 'react-native-paper';
 import TouchableRoundedImage from '../../components/TouchableRoundedImage';
 import PageHeader from '../../components/PageHeader';
+import * as usersService from '../../services/users.service';
+import ItemProfileList from '../../components/ItemProfileList';
+import {User} from 'src/services/models/user.model';
+import CreatePost from '../CreatePost';
+var _ = require('lodash');
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +69,8 @@ const Tab = createMaterialBottomTabNavigator();
 
 const Dashboard: React.FC<Props> = ({navigation}) => {
   const {logout} = useAuth();
+  const [searchText, setSearchText] = useState('');
+  const [usersFiltred, setUsersFiltred] = useState([]);
 
   function handleLogout() {
     // email, senha
@@ -68,91 +84,127 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
     );
   }
 
+  function handleSearchTextChange(
+    e: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) {
+    setSearchText(e.nativeEvent.text);
+    searchUser(e.nativeEvent.text);
+    // _.debounce(()=>{
+    //   searchUser(searchText);
+    // },1200)
+  }
+
+  function searchUser(name: String) {
+    const data = {
+      searchName: name,
+    };
+    usersService.getUsersByName(data).then((res) => {
+      console.log(res);
+      setUsersFiltred(res);
+    });
+  }
+
   function Feed() {
     return (
       <View style={styles.container}>
-        <PageHeader hasSearch={true} isLogout={true} />
+        <PageHeader
+          hasSearch={true}
+          isLogout={true}
+          searchTextInput={searchText}
+          onSearchTextChange={handleSearchTextChange}
+        />
 
-        <ScrollView>
-          <View>
-            <View style={styles.containerImageProfile}>
-              <TouchableRoundedImage
-                onPress={() => {}}
-                size={48}
-                source={
-                  'https://images.unsplash.com/photo-1505999407077-7937810b98ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1488&q=80'
-                }
-              />
-              <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                Isala Kant
-              </Text>
+        {!searchText ? (
+          <ScrollView>
+            <View>
+              <View style={styles.containerImageProfile}>
+                <TouchableRoundedImage
+                  onPress={() => {}}
+                  size={48}
+                  source={
+                    'https://images.unsplash.com/photo-1505999407077-7937810b98ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1488&q=80'
+                  }
+                />
+                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
+                  Isala Kant
+                </Text>
+              </View>
+              <View style={styles.postContainer}>
+                <Image
+                  style={styles.imagePost}
+                  source={{uri: 'https://picsum.photos/400'}}
+                />
+                <IconButton
+                  icon="heart"
+                  color={Colors.red500}
+                  size={20}
+                  onPress={() => console.log('Pressed')}
+                />
+              </View>
             </View>
-            <View style={styles.postContainer}>
-              <Image
-                style={styles.imagePost}
-                source={{uri: 'https://picsum.photos/400'}}
-              />
-              <IconButton
-                icon="heart"
-                color={Colors.red500}
-                size={20}
-                onPress={() => console.log('Pressed')}
-              />
+            <View>
+              <View style={styles.containerImageProfile}>
+                <TouchableRoundedImage
+                  onPress={() => {}}
+                  size={48}
+                  source={
+                    'https://images.unsplash.com/photo-1507038732509-8b1a9623223a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2134&q=80'
+                  }
+                />
+                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
+                  Guilherme Prass
+                </Text>
+              </View>
+              <View style={styles.postContainer}>
+                <Image
+                  style={styles.imagePost}
+                  source={{uri: 'https://picsum.photos/401'}}
+                />
+                <IconButton
+                  icon="heart"
+                  color={Colors.red500}
+                  size={20}
+                  onPress={() => console.log('Pressed')}
+                />
+              </View>
             </View>
-          </View>
-          <View>
-            <View style={styles.containerImageProfile}>
-              <TouchableRoundedImage
-                onPress={() => {}}
-                size={48}
-                source={
-                  'https://images.unsplash.com/photo-1507038732509-8b1a9623223a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2134&q=80'
-                }
-              />
-              <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                Guilherme Prass
-              </Text>
+            <View>
+              <View style={styles.containerImageProfile}>
+                <TouchableRoundedImage
+                  onPress={() => {}}
+                  size={48}
+                  source={
+                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
+                  }
+                />
+                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
+                  Juliana Chan
+                </Text>
+              </View>
+              <View style={styles.postContainer}>
+                <Image
+                  style={styles.imagePost}
+                  source={{uri: 'https://picsum.photos/402'}}
+                />
+                <IconButton
+                  icon="heart"
+                  color={Colors.red500}
+                  size={20}
+                  onPress={() => console.log('Pressed')}
+                />
+              </View>
             </View>
-            <View style={styles.postContainer}>
-              <Image
-                style={styles.imagePost}
-                source={{uri: 'https://picsum.photos/401'}}
-              />
-              <IconButton
-                icon="heart"
-                color={Colors.red500}
-                size={20}
-                onPress={() => console.log('Pressed')}
-              />
+          </ScrollView>
+        ) : (
+          <ScrollView>
+            <View style={{marginHorizontal: 8}}>
+              {!!usersFiltred &&
+                usersFiltred.map((user: User) => {
+                  return <ItemProfileList key={user._id} user={user} />;
+                })}
             </View>
-          </View>
-          <View>
-            <View style={styles.containerImageProfile}>
-              <TouchableRoundedImage
-                onPress={() => {}}
-                size={48}
-                source={
-                  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
-                }
-              />
-              <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                Juliana Chan
-              </Text>
-            </View>
-            <View style={styles.postContainer}>
-              <Image
-                style={styles.imagePost}
-                source={{uri: 'https://picsum.photos/402'}}
-              />
-              <IconButton
-                icon="heart"
-                color={Colors.red500}
-                size={20}
-                onPress={() => console.log('Pressed')}
-              />
-            </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
       </View>
     );
   }
@@ -160,8 +212,8 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
   return (
     <Tab.Navigator barStyle={{backgroundColor: '#6272a4'}}>
       <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen name="Novo" component={CreatePost} />
       <Tab.Screen name="Perfil" component={Profile} />
-      <Tab.Screen name="Sair" component={logoutView} />
     </Tab.Navigator>
   );
 };

@@ -80,7 +80,7 @@ const Profile: React.FC<Props> = ({navigation}) => {
 
     const resToken = await updateUser(requestUpdate);
     await updateToken(resToken);
-    const resUserUpdated = await getUserById(user!.id);
+    const resUserUpdated = await getUserById(user!._id);
     console.log('resUserUpdated', resUserUpdated);
     await updateLocalUser(resUserUpdated);
   }
@@ -100,7 +100,7 @@ const Profile: React.FC<Props> = ({navigation}) => {
         };
 
         updateProfilePic(uploadImage);
-        getUserById(user!.id);
+        getUserById(user!._id);
         updateLocalUser({...user, refprofilepic: uploadImage.imageBase64});
       }
     });

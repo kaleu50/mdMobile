@@ -13,18 +13,20 @@ interface PageHeaderProps {
   isLogout?: boolean;
   hasSearch?: boolean;
   headerRight?: ReactNode;
+  searchTextInput?: string;
+  onSearchTextChange?: any;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   hasSearch,
   isLogout,
   headerRight,
+  searchTextInput,
+  onSearchTextChange,
 }) => {
   const {navigate, goBack} = useNavigation();
 
   const {logout} = useAuth();
-
-  const [searchString, setSearchString] = useState();
 
   function handleGoBack() {
     if (!isLogout) {
@@ -41,18 +43,15 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           <BorderlessButton onPress={handleGoBack}>
             <Image source={backIcon} resizeMode="contain" />
           </BorderlessButton>
-          {!!hasSearch && (
+          {hasSearch ? (
             <FormInput
               style={{width: 250}}
               icon="search"
-              autoCorrect={false}
-              autoCapitalize="none"
               placeholder="Pesquisar..."
-              returnKeyType="next"
-              value={searchString}
-              onChangeText={setSearchString}
+              value={searchTextInput}
+              onChange={onSearchTextChange}
             />
-          )}
+          ) : null}
           <Text style={styles.logo}>SH</Text>
         </View>
       </View>

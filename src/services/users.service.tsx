@@ -30,3 +30,21 @@ export function getUserById(id: string): Promise<User> {
     return res.data;
   });
 }
+export function followById(id: string): Promise<any> {
+  return api.post(`/users/follow/${id}`).then((res) => {
+    return res.data;
+  });
+}
+
+export function getUsersByName(data: any){
+
+
+  const config = {
+    params: data,
+  } as AxiosRequestConfig;
+
+  console.log(config)
+  return api.get('/users/searchusers', config).then((res) => {
+    return res.data;
+  });
+}
