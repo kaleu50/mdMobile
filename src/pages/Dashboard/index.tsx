@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Button,
@@ -22,6 +22,9 @@ import ItemProfileList from '../../components/ItemProfileList';
 import {User} from 'src/services/models/user.model';
 import CreatePost from '../CreatePost';
 var _ = require('lodash');
+import * as postsService from '../../services/posts.service';
+import {Post} from 'src/services/models/posts.model';
+import PostItem from '../../components/PostItem';
 
 const styles = StyleSheet.create({
   container: {
@@ -72,6 +75,12 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [usersFiltred, setUsersFiltred] = useState([]);
 
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    getFeed();
+  }, []);
+
   function handleLogout() {
     // email, senha
     logout();
@@ -104,6 +113,14 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
     });
   }
 
+  function getFeed() {
+    console.log('aq');
+    postsService.getPostFeed().then((res) => {
+      console.log('res', res);
+      setPosts(res);
+    });
+  }
+
   function Feed() {
     return (
       <View style={styles.container}>
@@ -116,84 +133,10 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
 
         {!searchText ? (
           <ScrollView>
-            <View>
-              <View style={styles.containerImageProfile}>
-                <TouchableRoundedImage
-                  onPress={() => {}}
-                  size={48}
-                  source={
-                    'https://images.unsplash.com/photo-1505999407077-7937810b98ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1488&q=80'
-                  }
-                />
-                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                  Isala Kant
-                </Text>
-              </View>
-              <View style={styles.postContainer}>
-                <Image
-                  style={styles.imagePost}
-                  source={{uri: 'https://picsum.photos/400'}}
-                />
-                <IconButton
-                  icon="heart"
-                  color={Colors.red500}
-                  size={20}
-                  onPress={() => console.log('Pressed')}
-                />
-              </View>
-            </View>
-            <View>
-              <View style={styles.containerImageProfile}>
-                <TouchableRoundedImage
-                  onPress={() => {}}
-                  size={48}
-                  source={
-                    'https://images.unsplash.com/photo-1507038732509-8b1a9623223a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2134&q=80'
-                  }
-                />
-                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                  Guilherme Prass
-                </Text>
-              </View>
-              <View style={styles.postContainer}>
-                <Image
-                  style={styles.imagePost}
-                  source={{uri: 'https://picsum.photos/401'}}
-                />
-                <IconButton
-                  icon="heart"
-                  color={Colors.red500}
-                  size={20}
-                  onPress={() => console.log('Pressed')}
-                />
-              </View>
-            </View>
-            <View>
-              <View style={styles.containerImageProfile}>
-                <TouchableRoundedImage
-                  onPress={() => {}}
-                  size={48}
-                  source={
-                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
-                  }
-                />
-                <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-                  Juliana Chan
-                </Text>
-              </View>
-              <View style={styles.postContainer}>
-                <Image
-                  style={styles.imagePost}
-                  source={{uri: 'https://picsum.photos/402'}}
-                />
-                <IconButton
-                  icon="heart"
-                  color={Colors.red500}
-                  size={20}
-                  onPress={() => console.log('Pressed')}
-                />
-              </View>
-            </View>
+            {posts &&
+              posts.map((post: Post) => {
+                return <PostItem key={post._id} post={post} />;
+              })}
           </ScrollView>
         ) : (
           <ScrollView>
