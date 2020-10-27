@@ -35,25 +35,29 @@ const PostItem: React.FC<PostItemProps> = ({post}) => {
 
   return (
     <View>
-      <View style={styles.containerImageProfile}>
-        <TouchableRoundedImage
-          onPress={() => {}}
-          size={48}
-          source={user!.refprofilepic}
-        />
-        <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
-          {user?.name}
-        </Text>
-      </View>
-      <View style={styles.postContainer}>
-        <Image style={styles.imagePost} source={{uri: post.refpostpic}} />
-        <IconButton
-          icon="heart"
-          color={Colors.red500}
-          size={20}
-          onPress={() => console.log('Pressed')}
-        />
-      </View>
+      {user && (
+        <>
+          <View style={styles.containerImageProfile}>
+            <TouchableRoundedImage
+              onPress={() => {}}
+              size={48}
+              source={user!.refprofilepic}
+            />
+            <Text style={{color: '#fff', fontSize: 24, marginTop: 12}}>
+              {user?.name}
+            </Text>
+          </View>
+          <View style={styles.postContainer}>
+            <Image style={styles.imagePost} source={{uri: post.refpostpic}} />
+            <IconButton
+              icon="heart"
+              color={Colors.red500}
+              size={20}
+              onPress={() => console.log('Pressed')}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };
