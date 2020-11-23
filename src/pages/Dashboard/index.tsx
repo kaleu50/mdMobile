@@ -108,15 +108,12 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
       searchName: name,
     };
     usersService.getUsersByName(data).then((res) => {
-      console.log(res);
       setUsersFiltred(res);
     });
   }
 
   function getFeed() {
-    console.log('aq');
     postsService.getPostFeed().then((res) => {
-      console.log('res', res);
       setPosts(res);
     });
   }

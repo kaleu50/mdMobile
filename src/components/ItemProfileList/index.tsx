@@ -16,10 +16,8 @@ const ItemProfileList: React.FC<ItemProfileListProps> = ({user}) => {
     usersService
       .followById(id)
       .then((res) => {
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
       });
   }
 

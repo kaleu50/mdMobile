@@ -21,12 +21,8 @@ export function uploadImageProfile(data: any): Promise<any> {
   });
 }
 
-export function getUserById(id: string): Promise<User> {
-  console.log(id);
-  const config = {
-    params: {id},
-  } as AxiosRequestConfig;
-  return api.get('/users/userById', config).then((res) => {
+export function getUserById(userId: string): Promise<User> {
+  return api.get(`/users/userById/${userId}`).then((res) => {
     return res.data;
   });
 }
@@ -43,7 +39,6 @@ export function getUsersByName(data: any){
     params: data,
   } as AxiosRequestConfig;
 
-  console.log(config)
   return api.get('/users/searchusers', config).then((res) => {
     return res.data;
   });

@@ -1,31 +1,25 @@
 import React, {ReactNode, useEffect, useState} from 'react';
 import {View, Image, Text, Alert} from 'react-native';
 import styles from './styles';
-import {BorderlessButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 
-import backIcon from '../../assets/images/icons/back.png';
-import logoImage from '../../assets/images/logo.png';
-import {useAuth} from '../../contexts/auth.context';
-import {FormInput} from '../../pages/SignIn/styles';
 import TouchableRoundedImage from '../TouchableRoundedImage';
-import {Colors, IconButton} from 'react-native-paper';
 import {User} from '../../services/models/user.model';
-import {Post} from '../../services/models/posts.model';
 import * as userService from '../../services/users.service';
+import { Comments } from 'src/services/models/comments.model';
 
 interface PostItemProps {
-  post: Post;
+  comment: Comments;
 }
 
-const PostItem: React.FC<PostItemProps> = ({post}) => {
+const PostItem: React.FC<PostItemProps> = ({comment}) => {
   const [user, setUser] = useState<User | null>(null);
 
   const {navigate} = useNavigation();
 
   useEffect(() => {
     getUser();
-  }, [post]);
+  }, [comment]);
 
   function handleLike() {}
 
@@ -37,7 +31,7 @@ const PostItem: React.FC<PostItemProps> = ({post}) => {
 
   return (
     <View>
-      {user && (
+      {comment && (
         <>
           <View style={styles.containerImageProfile}>
             <TouchableRoundedImage
@@ -45,28 +39,19 @@ const PostItem: React.FC<PostItemProps> = ({post}) => {
               size={48}
               source={user!.refprofilepic}
             />
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
               <Text
                 style={{
                   color: '#fff',
                   fontSize: 24,
                   marginTop: 6,
                 }}>
-                {user?.name}
+                {comment?.text}
               </Text>
               <Text style={{color: '#fff', fontSize: 12}}>
-                {post.createdAt}
+                {comment.createdAt}
               </Text>
             </View>
-          </View>
-          <View style={styles.postContainer}>
-            <Image style={styles.imagePost} source={{uri: post.refpostpic}} />
-            <IconButton
-              icon="heart"
-              color={Colors.red500}
-              size={20}
-              onPress={() => console.log('Pressed')}
-            />
           </View>
         </>
       )}
@@ -75,4 +60,3 @@ const PostItem: React.FC<PostItemProps> = ({post}) => {
 };
 
 export default PostItem;
-//#8257e5

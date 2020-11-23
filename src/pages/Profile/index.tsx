@@ -81,7 +81,6 @@ const Profile: React.FC<Props> = ({navigation}) => {
     const resToken = await updateUser(requestUpdate);
     await updateToken(resToken);
     const resUserUpdated = await getUserById(user!._id);
-    console.log('resUserUpdated', resUserUpdated);
     await updateLocalUser(resUserUpdated);
   }
 
@@ -89,7 +88,6 @@ const Profile: React.FC<Props> = ({navigation}) => {
     ImagePicker.showImagePicker(optionsImagePicker, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-        console.log('user', user);
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {

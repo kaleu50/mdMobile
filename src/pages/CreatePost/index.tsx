@@ -47,10 +47,8 @@ const CreatePost: React.FC<Props> = ({navigation}) => {
     postsService
       .createPost(data)
       .then((res) => {
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
       });
   }
 

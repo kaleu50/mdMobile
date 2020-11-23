@@ -1,11 +1,17 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#282a36',
+  },
   header: {
-    backgroundColor: '#00CED1',
+    backgroundColor: '#383A59',
   },
   headerContent: {
-    padding: 30,
+    paddingTop: 30,
+    paddingBottom: 60,
+
     alignItems: 'center',
   },
   avatar: {
@@ -23,7 +29,7 @@ const styles = StyleSheet.create({
   },
   profileDetail: {
     alignSelf: 'center',
-    marginTop: 200,
+    marginTop: 300,
     alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',
@@ -35,38 +41,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: '#00CED1',
+    color: '#bd93f9',
   },
   count: {
     fontSize: 18,
   },
   bodyContent: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 30,
-    marginTop: 40,
+    paddingHorizontal: 20,
+    marginTop: 50,
+    flexWrap: 'wrap', 
+    alignItems: 'flex-start',
+    flexDirection:'row',
   },
   textInfo: {
     fontSize: 18,
     marginTop: 20,
     color: '#696969',
-  },
-  buttonContainer: {
-    marginTop: 10,
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    width: 250,
-    borderRadius: 30,
-    backgroundColor: '#00CED1',
-  },
-  description: {
-    fontSize: 20,
-    color: '#00CED1',
-    marginTop: 10,
-    textAlign: 'center',
   },
 });
 
