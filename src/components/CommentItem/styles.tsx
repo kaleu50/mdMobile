@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -28,6 +28,20 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     flexDirection: 'row',
+  },
+  baseText: {
+    color: '#fff',
+    fontSize: 14,
+    marginTop: 16,
+    fontWeight: 'bold',
+  },
+
+  msgText: {
+    color: '#fff',
+    fontSize: 14,
+    marginTop: 16,
+    marginLeft: 16,
+
   },
 });
 

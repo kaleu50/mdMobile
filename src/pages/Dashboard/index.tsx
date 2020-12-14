@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Button,
@@ -8,6 +8,7 @@ import {
   Text,
   NativeSyntheticEvent,
   TextInputChangeEventData,
+  RefreshControl,
 } from 'react-native';
 import {useAuth} from '../../contexts/auth.context';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -25,6 +26,8 @@ var _ = require('lodash');
 import * as postsService from '../../services/posts.service';
 import {Post} from 'src/services/models/posts.model';
 import PostItem from '../../components/PostItem';
+import RecomendationItem from '../../components/RecomendationItem';
+import {useFocusEffect} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -74,11 +77,27 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
   const {logout} = useAuth();
   const [searchText, setSearchText] = useState('');
   const [usersFiltred, setUsersFiltred] = useState([]);
-
   const [posts, setPosts] = useState<Post[]>([]);
+  const [usersRecomentation, setUsersRecomentation] = useState<User[]>([]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
     getFeed();
+    getRecomendation();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getFeed()
+      .then(() => {
+        setRefreshing(false);
+        getRecomendation();
+      })
+      .catch((err) => {
+        setRefreshing(false);
+      });
   }, []);
 
   function handleLogout() {
@@ -108,13 +127,22 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
       searchName: name,
     };
     usersService.getUsersByName(data).then((res) => {
+      console.log('res,', res);
       setUsersFiltred(res);
     });
   }
 
   function getFeed() {
-    postsService.getPostFeed().then((res) => {
+    console.log('aq');
+    return postsService.getPostFeed().then((res) => {
       setPosts(res);
+    });
+  }
+
+  function getRecomendation() {
+    usersService.getRecomendations().then((res) => {
+      console.log(res);
+      setUsersRecomentation(res);
     });
   }
 
@@ -129,10 +157,27 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
         />
 
         {!searchText ? (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'flex-start',
+                justifyContent: 'space-between',
+              }}>
+              {usersRecomentation &&
+                usersRecomentation.map((item) => {
+                  return <RecomendationItem user={item}></RecomendationItem>;
+                })}
+            </View>
+
             {posts &&
               posts.map((post: Post) => {
-                return <PostItem key={post._id} post={post} />;
+                return (
+                  <PostItem key={post._id} post={post} onDelete={getFeed} />
+                );
               })}
           </ScrollView>
         ) : (
@@ -151,7 +196,16 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
 
   return (
     <Tab.Navigator barStyle={{backgroundColor: '#6272a4'}}>
-      <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen
+        name="Feed"
+        component={Feed}
+        listeners={{
+          tabPress: (e) => {
+            getFeed();
+            getRecomendation();
+          },
+        }}
+      />
       <Tab.Screen name="Novo" component={CreatePost} />
       <Tab.Screen name="Perfil" component={Profile} />
     </Tab.Navigator>

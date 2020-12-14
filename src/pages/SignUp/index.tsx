@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {View, Button, StyleSheet, Platform, Picker} from 'react-native';
+import {View, Button, StyleSheet, Platform, Picker, Image, Alert} from 'react-native';
 import {
   Container,
   Form,
@@ -12,6 +12,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
 import {useUser} from '../../contexts/users.context';
 import {useAuth} from '../../contexts/auth.context';
+import logoImage from '../../assets/images/hearth-beat-1x1.png';
+import * as toastService from '../../services/toast.service';
 
 interface Props {
   navigation: any;
@@ -35,7 +37,7 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date(1598051730000));
   const [show, setShow] = useState(false);
-  const [selectedConditionValue, setSelectedConditionValue] = useState('');
+  const [selectedConditionValue, setSelectedConditionValue] = useState('neurologica');
 
   // const {signUp} = useUser();
 
@@ -52,19 +54,43 @@ const SignUp: React.FC<Props> = ({navigation}) => {
   };
 
   function handleSubmit() {
-    const data = {
-      name,
-      email,
-      password,
-      birthdate: date,
-      condition: selectedConditionValue,
-    } as SignUpRequest;
-    // email, senha
-    signUp(data);
+    if (email === '' || password === '' || name === '' || date === null || selectedConditionValue === '') {
+      Alert.alert(
+        'Erro',
+        'Verifique todos os campos!',
+        [{text: 'OK', onPress: () => {}}],
+        {cancelable: false},
+      );
+    } else {
+      const data = {
+        name,
+        email,
+        password,
+        birthdate: date,
+        condition: selectedConditionValue,
+      } as SignUpRequest;
+      // email, senha
+      signUp(data)
+        .then(() => {
+          toastService.showToastWithGravity('Criado com sucesso!');
+          navigation.navigate('SignIn')
+        })
+        .catch((err) => {
+          toastService.showToastWithGravity(
+            'Por favor verifique o email e senha!',
+          );
+        });
+    }
   }
 
   return (
     <Container style={styles.container}>
+      <Image
+        source={logoImage}
+        style={{width: 300, height: 300, marginTop: -50}}
+        resizeMode="contain"
+      />
+
       <Form>
         <FormInput
           icon="person-outline"
@@ -124,8 +150,12 @@ const SignUp: React.FC<Props> = ({navigation}) => {
           onValueChange={(itemValue, itemIndex) =>
             setSelectedConditionValue(itemValue)
           }>
-          <Picker.Item label="Cardiaco" value="cardio" />
-          <Picker.Item label="Hepatico" value="hepatio" />
+          <Picker.Item label="Condição Neurológica" value="neurologica" />
+          <Picker.Item label="Condição Hormonal" value="hormonal" />
+          <Picker.Item label="Condição Psiquiatrica" value="psiquiatrica" />
+          <Picker.Item label="Condição Pulmonar" value="pulmonar" />
+          <Picker.Item label="Condição Ginecológica" value="ginecologica" />
+          <Picker.Item label="Condição Cardíaca" value="cardiaca" />
           <Picker.Item label="Outros" value="outros" />
         </Picker>
 

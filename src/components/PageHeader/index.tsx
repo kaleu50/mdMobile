@@ -5,7 +5,7 @@ import {BorderlessButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 
 import backIcon from '../../assets/images/icons/back.png';
-import logoImage from '../../assets/images/logo.png';
+import logoImage from '../../assets/images/hearth-beat-1x1-simbolo.png';
 import {useAuth} from '../../contexts/auth.context';
 import {FormInput} from '../../pages/SignIn/styles';
 
@@ -26,6 +26,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   const {navigate, goBack} = useNavigation();
 
+  const [text, setText] = useState();
+
   const {logout} = useAuth();
 
   function handleGoBack() {
@@ -41,7 +43,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       <View style={styles.container}>
         <View style={styles.topBar}>
           <BorderlessButton onPress={handleGoBack}>
-            <Image source={backIcon} resizeMode="contain" />
+            <Image source={backIcon} style={{ marginTop: -10}} resizeMode="contain" />
           </BorderlessButton>
           {hasSearch ? (
             <FormInput
@@ -52,7 +54,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               onChange={onSearchTextChange}
             />
           ) : null}
-          <Text style={styles.logo}>SH</Text>
+
+          <Image
+            source={logoImage}
+            style={{width: 35, height: 35, marginTop: -10}}
+            resizeMode="contain"
+          />
         </View>
       </View>
     </View>

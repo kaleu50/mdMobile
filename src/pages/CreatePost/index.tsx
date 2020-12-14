@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
 import {RectButton, TouchableOpacity} from 'react-native-gesture-handler';
 import PageHeader from '../../components/PageHeader';
 import ImagePicker from 'react-native-image-picker';
@@ -7,6 +7,8 @@ import ImagePicker from 'react-native-image-picker';
 import styles, {FormInput, SubmitButton} from './styles';
 import {PostCreate} from 'src/services/models/posts.model';
 import * as postsService from '../../services/posts.service';
+import * as toastService from '../../services/toast.service';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {
   navigation: any;
@@ -39,17 +41,32 @@ const CreatePost: React.FC<Props> = ({navigation}) => {
   }
 
   function handleSubmit() {
-    const data = {
-      title: description,
-      imageBase64: image,
-    } as PostCreate;
+    if (description === '') {
+      Alert.alert(
+        'Erro',
+        'Verifique a descrição!',
+        [{text: 'OK', onPress: () => {}}],
+        {cancelable: false},
+      );
+    } else {
+      const data = {
+        title: description,
+        imageBase64: image,
+      } as PostCreate;
 
-    postsService
-      .createPost(data)
-      .then((res) => {
-      })
-      .catch((err) => {
-      });
+      postsService
+        .createPost(data)
+        .then((res) => {
+          toastService.showToastWithGravity('Post criado com sucesso!');
+          setDescription('');
+          setImage('');
+          navigation.navigate('Feed');
+        })
+        .catch((err) => {
+          toastService.showToastWithGravity('Occorreu um erro ao criar o post!');
+
+        });
+    }
   }
 
   return (
@@ -69,6 +86,8 @@ const CreatePost: React.FC<Props> = ({navigation}) => {
               style={{
                 alignSelf: 'stretch',
                 height: 300,
+                resizeMode: 'cover',
+
               }}
               source={{uri: image}}
             />

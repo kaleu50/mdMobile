@@ -29,11 +29,13 @@ const styles = StyleSheet.create({
   },
   profileDetail: {
     alignSelf: 'center',
-    marginTop: 300,
+    marginTop: 280,
     alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',
     backgroundColor: '#ffffff',
+    borderRadius:15,
+    overflow: "hidden"
   },
   detailContent: {
     margin: 10,

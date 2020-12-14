@@ -1,5 +1,14 @@
-import React, {useState, useRef} from 'react';
-import {View, Button, StyleSheet, Platform, Picker, Image} from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  View,
+  Button,
+  StyleSheet,
+  Platform,
+  Picker,
+  Image,
+  Alert,
+  Text,
+} from 'react-native';
 import {Container, Form, FormInput, SubmitButton} from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SignUpRequest} from 'src/services/models/signup.model';
@@ -8,6 +17,10 @@ import {useAuth} from '../../contexts/auth.context';
 import ImagePicker from 'react-native-image-picker';
 import TouchableRoundedImage from '../../components/TouchableRoundedImage';
 import PageHeader from '../../components/PageHeader';
+import * as toastService from '../../services/toast.service';
+import {User} from 'src/services/models/user.model';
+import * as userService from '../../services/users.service';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Props {
   navigation: any;
@@ -31,11 +44,35 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     overflow: 'hidden',
   },
+  name: {
+    fontSize: 22,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  profileDetail: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+  detailContent: {
+    margin: 10,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    color: '#bd93f9',
+  },
+  count: {
+    fontSize: 18,
+  },
 });
 
 const optionsImagePicker = {
   title: 'Select Avatar',
-  customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
   storageOptions: {
     skipBackup: true,
     path: 'images',
@@ -45,6 +82,7 @@ const optionsImagePicker = {
 const Profile: React.FC<Props> = ({navigation}) => {
   const {user, updateToken, updateLocalUser} = useAuth();
   const {updateUser, updateProfilePic, getUserById} = useUser();
+  const [userInfo, setUserInfo] = useState<User | null>(null);
 
   const emailRef = useRef<any>();
   const passwordRef = useRef<any>();
@@ -70,18 +108,41 @@ const Profile: React.FC<Props> = ({navigation}) => {
   };
 
   async function handleSubmit() {
-    const requestUpdate = {
-      name,
-      email,
-      password,
-      birthdate: date,
-      condition: selectedConditionValue,
-    } as SignUpRequest;
+    if (
+      email === '' ||
+      name === '' ||
+      date === null ||
+      selectedConditionValue === ''
+    ) {
+      Alert.alert(
+        'Erro',
+        'Verifique todos os campos!',
+        [{text: 'OK', onPress: () => {}}],
+        {cancelable: false},
+      );
+    } else {
+      const requestUpdate = {
+        name,
+        email,
+        password,
+        birthdate: date,
+        condition: selectedConditionValue,
+      } as SignUpRequest;
 
-    const resToken = await updateUser(requestUpdate);
-    await updateToken(resToken);
-    const resUserUpdated = await getUserById(user!._id);
-    await updateLocalUser(resUserUpdated);
+      const resToken = await updateUser(requestUpdate).then(() => {
+        toastService.showToastWithGravity('Atualizado com sucesso!');
+      });
+      await updateToken(resToken);
+      const resUserUpdated = await getUserById(user!._id);
+      await updateLocalUser(resUserUpdated);
+    }
+  }
+
+  function getUser() {
+    userService.getUserById(user!.id).then((res) => {
+      setUserInfo(res);
+      console.log('aqqq')
+    });
   }
 
   function handleImage() {
@@ -90,15 +151,13 @@ const Profile: React.FC<Props> = ({navigation}) => {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
       } else {
         const uploadImage = {
           imageBase64: 'data:' + response.type + ';base64,' + response.data,
         };
 
         updateProfilePic(uploadImage);
-        getUserById(user!._id);
+        getUserById(user!.id);
         updateLocalUser({...user, refprofilepic: uploadImage.imageBase64});
       }
     });
@@ -119,7 +178,22 @@ const Profile: React.FC<Props> = ({navigation}) => {
               source={user!.refprofilepic}
             />
           </View>
-
+          {userInfo && (
+            <View style={styles.profileDetail}>
+              <View style={styles.detailContent}>
+                <Text style={styles.title}>Posts</Text>
+                <Text style={styles.count}>{userInfo?.posts.length}</Text>
+              </View>
+              <View style={styles.detailContent}>
+                <Text style={styles.title}>Seguidores</Text>
+                <Text style={styles.count}>{userInfo?.follow.length}</Text>
+              </View>
+              <View style={styles.detailContent}>
+                <Text style={styles.title}>Seguindo</Text>
+                <Text style={styles.count}>{userInfo?.followedby.length}</Text>
+              </View>
+            </View>
+          )}
           <FormInput
             icon="person-outline"
             autoCorrect={false}
@@ -168,8 +242,12 @@ const Profile: React.FC<Props> = ({navigation}) => {
             onValueChange={(itemValue, itemIndex) =>
               setSelectedConditionValue(itemValue)
             }>
-            <Picker.Item label="Cardiaco" value="cardio" />
-            <Picker.Item label="Hepatico" value="hepatio" />
+            <Picker.Item label="Condição Neurológica" value="neurologica" />
+            <Picker.Item label="Condição Hormonal" value="hormonal" />
+            <Picker.Item label="Condição Psiquiatrica" value="psiquiatrica" />
+            <Picker.Item label="Condição Pulmonar" value="pulmonar" />
+            <Picker.Item label="Condição Ginecológica" value="ginecologica" />
+            <Picker.Item label="Condição Cardíaca" value="cardiaca" />
             <Picker.Item label="Outros" value="outros" />
           </Picker>
 

@@ -1,10 +1,5 @@
-import React, { useEffect, useState} from 'react';
-import {
-  Text,
-  View,
-  Image,
-  FlatList,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, View, Image, FlatList} from 'react-native';
 import TouchableSquareImage from '../../components/TouchableSquareImage';
 import {User} from 'src/services/models/user.model';
 import PageHeader from '../../components/PageHeader';
@@ -13,7 +8,8 @@ import * as postService from '../../services/posts.service';
 import {Post} from 'src/services/models/posts.model';
 
 import styles from './styles';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {RectButton} from 'react-native-gesture-handler';
 
 interface Props {
   route: any;
@@ -22,10 +18,8 @@ interface Props {
 const UserView: React.FC<Props> = ({route}) => {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  
 
   const {navigate} = useNavigation();
-
 
   const {id} = route.params;
 
@@ -52,8 +46,9 @@ const UserView: React.FC<Props> = ({route}) => {
         size={116}
         key={post._id}
         source={post.refpostpic}
-        onPress={() => {navigate('PostView', {postId: user?._id})}}></TouchableSquareImage>
-        
+        onPress={() => {
+          navigate('PostView', {id: post._id});
+        }}></TouchableSquareImage>
     );
   }
   return (
@@ -70,6 +65,7 @@ const UserView: React.FC<Props> = ({route}) => {
               />
               <Text style={styles.name}>{user?.name}</Text>
             </View>
+
           </View>
 
           <View style={styles.profileDetail}>

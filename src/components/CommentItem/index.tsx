@@ -6,28 +6,21 @@ import {useNavigation} from '@react-navigation/native';
 import TouchableRoundedImage from '../TouchableRoundedImage';
 import {User} from '../../services/models/user.model';
 import * as userService from '../../services/users.service';
-import { Comments } from 'src/services/models/comments.model';
+import {Comments} from 'src/services/models/comments.model';
+import {TextInput} from 'react-native-paper';
 
-interface PostItemProps {
+interface CommentItemProps {
   comment: Comments;
 }
 
-const PostItem: React.FC<PostItemProps> = ({comment}) => {
+const CommentItem: React.FC<CommentItemProps> = ({comment}) => {
   const [user, setUser] = useState<User | null>(null);
 
   const {navigate} = useNavigation();
 
-  useEffect(() => {
-    getUser();
-  }, [comment]);
+  useEffect(() => {}, [comment]);
 
   function handleLike() {}
-
-  function getUser() {
-    userService.getUserById(post.userId).then((res) => {
-      setUser(res);
-    });
-  }
 
   return (
     <View>
@@ -35,22 +28,20 @@ const PostItem: React.FC<PostItemProps> = ({comment}) => {
         <>
           <View style={styles.containerImageProfile}>
             <TouchableRoundedImage
-              onPress={()=>{navigate('UserView', {id: user._id})}}
-              size={48}
-              source={user!.refprofilepic}
+              onPress={() => {
+                navigate('UserView', {id: comment.userId._id});
+              }}
+              size={40}
+              source={comment.userId.refprofilepic}
             />
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontSize: 24,
-                  marginTop: 6,
-                }}>
-                {comment?.text}
-              </Text>
-              <Text style={{color: '#fff', fontSize: 12}}>
-                {comment.createdAt}
-              </Text>
+            <View
+              style={{
+                flexWrap: 'wrap',
+                alignItems: 'flex-start',
+                flexDirection: 'row',
+              }}>
+              <Text style={styles.baseText}>{comment?.userId.name}</Text>
+              <Text style={styles.msgText}>{comment.text}</Text>
             </View>
           </View>
         </>
@@ -59,4 +50,4 @@ const PostItem: React.FC<PostItemProps> = ({comment}) => {
   );
 };
 
-export default PostItem;
+export default CommentItem;

@@ -7,7 +7,7 @@ import SignUp from '../pages/SignUp';
 const AuthStack = createStackNavigator();
 
 const AuthRoutes: React.FC = () => (
-  <AuthStack.Navigator>
+  <AuthStack.Navigator screenOptions={{headerShown: false}}>
     <AuthStack.Screen
       name="SignIn"
       component={SignIn}

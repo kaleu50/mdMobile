@@ -13,11 +13,14 @@ import TouchableSquareImage from '../../components/TouchableSquareImage';
 import {User} from 'src/services/models/user.model';
 import PageHeader from '../../components/PageHeader';
 import * as postService from '../../services/posts.service';
+import * as conmmentsService from '../../services/comments.service';
+
 import {Post} from 'src/services/models/posts.model';
 
 import styles from './styles';
-import {Comments} from 'src/services/models/comments.model';
+import {CommentCreate, Comments} from 'src/services/models/comments.model';
 import PostItem from '../../components/PostItem';
+import CommentItem from '../../components/CommentItem';
 
 interface Props {
   route: any;
@@ -30,23 +33,33 @@ const PostView: React.FC<Props> = ({route}) => {
 
   const [comments, setComments] = useState<Comments[]>([]);
 
-  const {postId} = route.params;
+  const {id} = route.params;
 
   useEffect(() => {
-    getPost(postId);
+    getPost(id);
   }, []);
 
   function getPost(id: string) {
     postService.getPostById(id).then((res) => {
       setPost(res);
-      console.log('post', res);
-      // getComments(post!._id);
+      getComments(res._id);
     });
   }
 
   function getComments(id: string) {
-    postService.getPostCommentsById(id).then((res) => {
+    conmmentsService.getPostCommentsById(id).then((res) => {
       setComments(res);
+    });
+  }
+
+  function handleSubmit() {
+    const data = {
+      post: post?._id,
+      text: msg,
+    } as CommentCreate;
+    conmmentsService.createComment(data).then((res) => {
+      getComments(post!._id);
+      setMsg('');
     });
   }
 
@@ -55,7 +68,11 @@ const PostView: React.FC<Props> = ({route}) => {
   return (
     <View style={styles.container}>
       <PageHeader hasSearch={false} isLogout={false} />
-      <ScrollView>{post && <PostItem post={post}></PostItem>}</ScrollView>
+      <ScrollView style={{marginBottom: 80}}>
+        {post && <PostItem post={post}></PostItem>}
+        {comments &&
+          comments.map((item) => <CommentItem  key={item._id} comment={item}></CommentItem>)}
+      </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.inputs}
@@ -66,6 +83,7 @@ const PostView: React.FC<Props> = ({route}) => {
           underlineColorAndroid="transparent"
           onChangeText={(text) => setMsg(text)}
           returnKeyType="send"
+          onSubmitEditing={handleSubmit}
         />
       </View>
     </View>

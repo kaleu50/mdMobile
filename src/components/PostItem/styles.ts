@@ -2,12 +2,11 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   postContainer: {
-    flex: 1,
     overflow: 'hidden',
     alignItems: 'center',
     backgroundColor: '#bd93f9',
     position: 'relative',
-    margin: 10,
+    marginHorizontal: 20,
     borderRadius: 30,
     shadowColor: '#000',
     shadowOffset: {
@@ -20,14 +19,52 @@ const styles = StyleSheet.create({
     elevation: 11,
   },
   imagePost: {
-    width: 400,
-    height: 400,
-    flex: 1,
+    width: 380,
+    height: 350,
+    // flex: 1,
   },
   containerImageProfile: {
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     flexDirection: 'row',
+    marginHorizontal: 20,
+
+  },
+  containerImageProfileTitle: {
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginTop: -30
+  },
+
+  toolsContainer: {
+    flexWrap: 'wrap', 
+    alignItems: 'flex-start',
+    flexDirection:'row',
+    marginHorizontal: 20,
+    marginBottom: 10
+  },
+
+  buttonContainer: {
+    flexWrap: 'wrap', 
+    alignItems: 'flex-start',
+    flexDirection:'row',
+
+  },
+  baseText: {
+    color: '#fff',
+    fontSize: 14,
+    marginTop: 16,
+    fontWeight: 'bold',
+  },
+
+  msgText: {
+    color: '#fff',
+    fontSize: 14,
+    marginTop: 16,
+    marginLeft: 16,
+
   },
 });
 

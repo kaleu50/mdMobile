@@ -1,5 +1,4 @@
 import api from './api.service';
-import { Comments } from './models/comments.model';
 import {Post, PostCreate} from './models/posts.model';
 
 export function createPost(data: PostCreate): Promise<any> {
@@ -21,13 +20,17 @@ export function getPostsById(id: string): Promise<Post[]> {
 }
 
 export function getPostById(id: string): Promise<Post> {
-  return api.get(`/posts/${id}`).then((res) => {
+  return api.get(`/posts/getone/${id}`).then((res) => {
     return res.data;
   });
 }
 
-export function getPostCommentsById(id: string): Promise<Comments[]> {
-  return api.get(`/posts/comment/${id}`).then((res) => {
+export function deletePost(id: string): Promise<any> {
+  return api.delete(`/posts/${id}`).then((res) => {
     return res.data;
   });
 }
+
+
+
+

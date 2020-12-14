@@ -1,3 +1,4 @@
+import { Comments } from 'src/services/models/comments.model';
 export interface PostCreate {
   title: string;
   text: string;
@@ -12,5 +13,7 @@ export interface Post {
   userId: string;
   refpostpic: string;
   likes: number;
+  liked: boolean;
+  comments: [string];
   createdAt: Date;
 }

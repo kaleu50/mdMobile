@@ -32,14 +32,24 @@ export function followById(id: string): Promise<any> {
   });
 }
 
+export function unFollowById(id: string): Promise<any> {
+  return api.post(`/users/unfollow/${id}`).then((res) => {
+    return res.data;
+  });
+}
+
 export function getUsersByName(data: any){
-
-
   const config = {
     params: data,
   } as AxiosRequestConfig;
 
   return api.get('/users/searchusers', config).then((res) => {
+    return res.data;
+  });
+}
+
+export function getRecomendations(): Promise<User[]> {
+  return api.get(`/users/recomendations`).then((res) => {
     return res.data;
   });
 }
