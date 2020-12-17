@@ -83,8 +83,12 @@ const Dashboard: React.FC<Props> = ({navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
-    getFeed();
-    getRecomendation();
+    setTimeout(() => {
+      getFeed();
+      getRecomendation();
+
+    }, 1000);
+
   }, []);
 
   const onRefresh = useCallback(() => {
